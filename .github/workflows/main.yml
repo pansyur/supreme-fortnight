@@ -1,4 +1,4 @@
-name: Torrent Download and Artifact Upload with torrent-cli
+name: Torrent Download Using WebTorrent and Upload Artifact
 
 on:
   push:
@@ -7,36 +7,65 @@ on:
 
 jobs:
   torrent-download:
-    runs-on: ubuntu-latest  # You can use macOS or other runners too
+    runs-on: ubuntu-latest
 
     steps:
-    # Step 1: Checkout the repository
+    # Step 1: Checkout repository
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    # Step 2: Install Node.js
-    - name: Install Node.js
-      uses: actions/setup-node@v3
+    # Step 2: Set up Node.js
+    - name: Set up Node.js
+      uses: actions/setup-node@v2
       with:
-        node-version: '16'  # You can specify the version you need
+        node-version: '16'
 
-    # Step 3: Install torrent-cli
-    - name: Install torrent-cli
+    # Step 3: Install WebTorrent
+    - name: Install WebTorrent
       run: |
-        npm install -g torrent-cli
+        npm install webtorrent
 
-    # Step 4: Download the Torrent using torrent-cli
-    - name: Download Torrent with torrent-cli
+    # Step 4: Download torrent using WebTorrent
+    - name: Download Torrent
       run: |
-        # Create the download directory
-        mkdir -p ./downloads
+        const WebTorrent = require('webtorrent');
+        const fs = require('fs');
+        const path = require('path');
 
-        # Use torrent-cli to download the torrent to the specified folder
-        torrent download 'magnet:?xt=urn:btih:52F190627CAFD84D92444768ACC9F74D3C03C225&dn=52F190627CAFD84D92444768ACC9F74D3C03C225&tr=http%3A%2F%2F125.227.35.196%3A6969%2Fannounce&tr=http%3A%2F%2F210.244.71.25%3A6969%2Fannounce&tr=http%3A%2F%2F210.244.71.26%3A6969%2Fannounce&tr=http%3A%2F%2F213.159.215.198%3A6970%2Fannounce&tr=http%3A%2F%2F37.19.5.139%3A6969%2Fannounce&tr=http%3A%2F%2F37.19.5.155%3A6881%2Fannounce&tr=http%3A%2F%2F46.4.109.148%3A6969%2Fannounce&tr=http%3A%2F%2F87.248.186.252%3A8080%2Fannounce&tr=http%3A%2F%2Fasmlocator.ru%3A34000%2F1hfZS1k4jh%2Fannounce&tr=http%3A%2F%2Fbt.evrl.to%2Fannounce&tr=http%3A%2F%2Fbt.rutracker.org%2Fann&tr=https%3A%2F%2Fwww.artikelplanet.nl&tr=http%3A%2F%2Fmgtracker.org%3A6969%2Fannounce&tr=http%3A%2F%2Fpubt.net%3A2710%2Fannounce&tr=http%3A%2F%2Ftracker.baravik.org%3A6970%2Fannounce&tr=http%3A%2F%2Ftracker.dler.org%3A6969%2Fannounce&tr=http%3A%2F%2Ftracker.filetracker.pl%3A8089%2Fannounce&tr=http%3A%2F%2Ftracker.grepler.com%3A6969%2Fannounce&tr=http%3A%2F%2Ftracker.mg64.net%3A6881%2Fannounce&tr=http%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=http%3A%2F%2Ftracker.torrentyorg.pl%2Fannounce&tr=https%3A%2F%2Finternet.sitelio.me%2F&tr=https%3A%2F%2Fcomputer1.sitelio.me%2F&tr=udp%3A%2F%2F168.235.67.63%3A6969&tr=udp%3A%2F%2F182.176.139.129%3A6969&tr=udp%3A%2F%2F37.19.5.155%3A2710&tr=udp%3A%2F%2F46.148.18.250%3A2710&tr=udp%3A%2F%2F46.4.109.148%3A6969&tr=udp%3A%2F%2Fcomputerbedrijven.bestelinks.nl%2F&tr=udp%3A%2F%2Fcomputerbedrijven.startsuper.nl%2F&tr=udp%3A%2F%2Fcomputershop.goedbegin.nl%2F&tr=udp%3A%2F%2Fc3t.org&tr=udp%3A%2F%2Fallerhandelenlaag.nl&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969' --out ./downloads
+        // Magnet link (replace with actual magnet link)
+        const magnetLink = 'magnet:?xt=urn:btih:52F190627CAFD84D92444768ACC9F74D3C03C225&dn=52F190627CAFD84D92444768ACC9F74D3C03C225&tr=http%3A%2F%2F125.227.35.196%3A6969%2Fannounce&tr=http%3A%2F%2F210.244.71.25%3A6969%2Fannounce&tr=http%3A%2F%2F210.244.71.26%3A6969%2Fannounce&tr=http%3A%2F%2F213.159.215.198%3A6970%2Fannounce&tr=http%3A%2F%2F37.19.5.139%3A6969%2Fannounce&tr=http%3A%2F%2F37.19.5.155%3A6881%2Fannounce&tr=http%3A%2F%2F46.4.109.148%3A6969%2Fannounce&tr=http%3A%2F%2F87.248.186.252%3A8080%2Fannounce&tr=http%3A%2F%2Fasmlocator.ru%3A34000%2F1hfZS1k4jh%2Fannounce&tr=http%3A%2F%2Fbt.evrl.to%2Fannounce&tr=http%3A%2F%2Fbt.rutracker.org%2Fann&tr=https%3A%2F%2Fwww.artikelplanet.nl&tr=http%3A%2F%2Fmgtracker.org%3A6969%2Fannounce&tr=http%3A%2F%2Fpubt.net%3A2710%2Fannounce&tr=http%3A%2F%2Ftracker.baravik.org%3A6970%2Fannounce&tr=http%3A%2F%2Ftracker.dler.org%3A6969%2Fannounce&tr=http%3A%2F%2Ftracker.filetracker.pl%3A8089%2Fannounce&tr=http%3A%2F%2Ftracker.grepler.com%3A6969%2Fannounce&tr=http%3A%2F%2Ftracker.mg64.net%3A6881%2Fannounce&tr=http%3A%2F%2Ftracker.tiny-vps.com%3A6969%2Fannounce&tr=http%3A%2F%2Ftracker.torrentyorg.pl%2Fannounce&tr=https%3A%2F%2Finternet.sitelio.me%2F&tr=https%3A%2F%2Fcomputer1.sitelio.me%2F&tr=udp%3A%2F%2F168.235.67.63%3A6969&tr=udp%3A%2F%2F182.176.139.129%3A6969&tr=udp%3A%2F%2F37.19.5.155%3A2710&tr=udp%3A%2F%2F46.148.18.250%3A2710&tr=udp%3A%2F%2F46.4.109.148%3A6969&tr=udp%3A%2F%2Fcomputerbedrijven.bestelinks.nl%2F&tr=udp%3A%2F%2Fcomputerbedrijven.startsuper.nl%2F&tr=udp%3A%2F%2Fcomputershop.goedbegin.nl%2F&tr=udp%3A%2F%2Fc3t.org&tr=udp%3A%2F%2Fallerhandelenlaag.nl&tr=udp%3A%2F%2Ftracker.openbittorrent.com%3A80&tr=udp%3A%2F%2Ftracker.opentrackr.org%3A1337&tr=udp%3A%2F%2Ftracker.publicbt.com%3A80&tr=udp%3A%2F%2Ftracker.tiny-vps.com%3A6969';  // Replace with actual magnet link
 
-    # Step 5: Upload the downloaded files as artifacts
-    - name: Upload Artifact
+        // Create a WebTorrent client
+        const client = new WebTorrent();
+
+        // Define the download directory
+        const downloadDir = './downloads';
+        if (!fs.existsSync(downloadDir)){
+          fs.mkdirSync(downloadDir);
+        }
+
+        // Download the torrent
+        client.add(magnetLink, { path: downloadDir }, function (torrent) {
+          console.log('Torrent is downloading:', torrent.infoHash);
+
+          // Once the torrent is ready, save the files
+          torrent.on('done', function () {
+            console.log('Download complete!');
+            client.destroy();
+          });
+
+          // Log files that are being downloaded
+          torrent.files.forEach(function (file) {
+            console.log('Downloading file:', file.name);
+
+            // Stream each file to the download folder
+            file.createReadStream().pipe(fs.createWriteStream(path.join(downloadDir, file.name)));
+          });
+        });
+
+    # Step 5: Upload the downloaded files as artifact
+    - name: Upload Downloaded Files as Artifact
       uses: actions/upload-artifact@v3
       with:
-        name: downloaded-files
+        name: downloaded-torrent-files
         path: ./downloads
