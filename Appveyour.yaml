@@ -3,14 +3,19 @@ image: Ubuntu
 
 branches:
   only:
-    - Sera
+    - Prettyp
 
-build: off 
+# ✅ Disable default build mode
+build: off
+
+# ✅ Use scripts only
+init:
+  - echo "Init step - confirming script-only mode"
 
 install:
   - sudo apt update
   - sudo apt install -y nodejs npm curl
-  - npm install -g webtorrent-cli
+  - sudo npm install -g webtorrent-cli
   - mkdir -p downloads
 
 build_script:
